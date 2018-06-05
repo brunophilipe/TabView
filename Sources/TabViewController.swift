@@ -29,15 +29,15 @@ open class TabViewController: UIViewController {
     /// The current tab shown in the tab view controller's content view
     public var visibleViewController: UIViewController? {
         didSet {
-            oldValue?.removeFromParentViewController()
+            oldValue?.removeFromParent()
             oldValue?.view.removeFromSuperview()
 
             if let visibleViewController = visibleViewController {
-                addChildViewController(visibleViewController)
+                addChild(visibleViewController)
                 visibleViewController.view.frame = contentView.bounds
                 contentView.addSubview(visibleViewController.view)
                 visibleViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-                visibleViewController.didMove(toParentViewController: self)
+                visibleViewController.didMove(toParent: self)
             }
             updateVisibleViewControllerInsets()
             

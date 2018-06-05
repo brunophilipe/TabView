@@ -211,7 +211,9 @@ class TabViewBar: UIView {
                 tabCollectionView.deselectItem(at: indexPath, animated: true)
             }
         }
-        tabCollectionView.selectItem(at: IndexPath.init(item: index, section: 0), animated: true, scrollPosition: .centeredHorizontally)
+        tabCollectionView.selectItem(at: IndexPath.init(item: index, section: 0),
+									 animated: true,
+									 scrollPosition: .centeredHorizontally)
     }
     
     /// If there are less than the required number of tabs to keep the bar visible, hide it.
