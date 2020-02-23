@@ -9,23 +9,22 @@
 import UIKit
 
 public extension UIBarButtonItem {
-	
-	/// Takes a UIBarButtonItem and converts it to a UIBarButtonItemView, or instead returns its custom view if it has one.
-	func toView(_ minWidth: CGFloat? = nil) -> UIView {
-		if let customView = self.customView {
-			return customView
-		}
-		
-		let button = UIBarButtonItemView(item: self)
-		
-		if let minWidth = minWidth
-		{
-			// Add minimum width constraint if we were asked to set it
-			button.widthAnchor.constraint(greaterThanOrEqualToConstant: minWidth).isActive = true
-		}
-		
-		return button
-	}
+
+    /// Takes a UIBarButtonItem and converts it to a UIBarButtonItemView, or instead returns its custom view if it has one.
+    func toView(_ minWidth: CGFloat? = nil) -> UIView {
+        if let customView = self.customView {
+            return customView
+        }
+
+        let button = UIBarButtonItemView(item: self)
+
+        if let minWidth = minWidth {
+            // Add minimum width constraint if we were asked to set it
+            button.widthAnchor.constraint(greaterThanOrEqualToConstant: minWidth).isActive = true
+        }
+
+        return button
+    }
 }
 
 /// Class that attempts to properly render a UIBarButtonItem in a UIButton.
@@ -36,22 +35,22 @@ public extension UIBarButtonItem {
 /// Doesn't support:
 ///  - system icons
 private class UIBarButtonItemView: UIButton {
-	var item: UIBarButtonItem?
-	private var itemObservation: NSKeyValueObservation?
-	
-	convenience init(item: UIBarButtonItem) {
-		self.init(type: .system)
-		self.item = item
-		self.imageView?.contentMode = .scaleAspectFit
-		setTitle(item.title, for: .normal)
-		setImage(item.image, for: .normal)
-		self.tintColor = item.tintColor
-		if let target = item.target, let action = item.action {
-			addTarget(target, action: action, for: .touchUpInside)
-		}
-		self.titleLabel?.font = item.style == .done ? UIFont.boldSystemFont(ofSize: 17) : UIFont.systemFont(ofSize: 17)
-		itemObservation = item.observe(\.title) { [weak self] item, _ in
-			self?.setTitle(item.title, for: .normal)
-		}
-	}
+    var item: UIBarButtonItem?
+    private var itemObservation: NSKeyValueObservation?
+
+    convenience init(item: UIBarButtonItem) {
+        self.init(type: .system)
+        self.item = item
+        self.imageView?.contentMode = .scaleAspectFit
+        setTitle(item.title, for: .normal)
+        setImage(item.image, for: .normal)
+        self.tintColor = item.tintColor
+        if let target = item.target, let action = item.action {
+            addTarget(target, action: action, for: .touchUpInside)
+        }
+        self.titleLabel?.font = item.style == .done ? UIFont.boldSystemFont(ofSize: 17) : UIFont.systemFont(ofSize: 17)
+        itemObservation = item.observe(\.title) { [weak self] item, _ in
+            self?.setTitle(item.title, for: .normal)
+        }
+    }
 }

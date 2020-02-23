@@ -87,7 +87,7 @@ extension TabViewTabCollectionView: UICollectionViewDataSource {
         let tab = viewControllers[indexPath.row]
 
         cell.collectionView = self
-		cell.showCloseButton = barDelegate?.wantsCloseButton(for: tab) ?? true
+        cell.showCloseButton = barDelegate?.wantsCloseButton(for: tab) ?? true
         cell.setTab(tab)
 
         return cell
@@ -115,10 +115,10 @@ extension TabViewTabCollectionView: UICollectionViewDragDelegate {
     }
 
     func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-		guard viewControllers.count > 1 || barDelegate?.allowsDraggingLastTab ?? true else {
-			// If we shouldn't let the last tab be dragged, return an empty array to signify this.
-			return []
-		}
+        guard viewControllers.count > 1 || barDelegate?.allowsDraggingLastTab ?? true else {
+            // If we shouldn't let the last tab be dragged, return an empty array to signify this.
+            return []
+        }
 
         let dragItem = UIDragItem.init(itemProvider: NSItemProvider.init())
         dragItem.localObject = viewControllers[indexPath.item]
@@ -178,7 +178,7 @@ extension TabViewTabCollectionView: UICollectionViewDropDelegate {
             let destinationIndexPath = coordinator.destinationIndexPath,
             let viewController = dragItem.localObject as? UIViewController,
             let oldDelegate = coordinator.session.localDragSession?.localContext as? TabViewBarDelegate
-        else { return }
+            else { return }
         oldDelegate.detachTab(viewController)
         barDelegate?.insertTab(viewController, atIndex: destinationIndexPath.item)
         self.barDelegate?.activateTab(viewController)
@@ -200,9 +200,9 @@ private class TabViewTab: UICollectionViewCell {
         didSet { update() }
     }
 
-	var showCloseButton: Bool = true {
-		didSet { update() }
-	}
+    var showCloseButton: Bool = true {
+        didSet { update() }
+    }
 
     override init(frame: CGRect) {
         closeButton = UIButton()

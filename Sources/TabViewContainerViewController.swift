@@ -63,18 +63,18 @@ open class TabViewContainerViewController<TabViewType: TabViewController>: UIVie
                 setOverrideTraitCollection(overriddenTraitCollection, forChild: secondaryVC)
                 self.secondaryTabViewController = secondaryVC
 
-				prepareTabViewForDisplay(secondaryVC)
+                prepareTabViewForDisplay(secondaryVC)
             }
         }
     }
 
-	/// The container will automatically set this as the delegate for the tab view controllers.
-	public weak var delegateForTabControllers: TabViewControllerDelegate? = nil {
-		didSet {
-			primaryTabViewController.delegate = delegateForTabControllers
-			secondaryTabViewController?.delegate = delegateForTabControllers
-		}
-	}
+    /// The container will automatically set this as the delegate for the tab view controllers.
+    public weak var delegateForTabControllers: TabViewControllerDelegate? = nil {
+        didSet {
+            primaryTabViewController.delegate = delegateForTabControllers
+            secondaryTabViewController?.delegate = delegateForTabControllers
+        }
+    }
 
     /// Current theme. When set, will propagate to current tab view controllers.
     public var theme: TabViewTheme {
@@ -93,7 +93,7 @@ open class TabViewContainerViewController<TabViewType: TabViewController>: UIVie
     public let primaryTabViewController: TabViewType
 
     /// The secondary tab view controller in the container. Is visible if the container is in split view.
-	/// Note: It is advisable not to set this manually. It is open only so subclasses can observe it via an override.
+    /// Note: It is advisable not to set this manually. It is open only so subclasses can observe it via an override.
     open var secondaryTabViewController: TabViewType? {
         didSet {
             oldValue?.view.removeFromSuperview()
@@ -101,7 +101,7 @@ open class TabViewContainerViewController<TabViewType: TabViewController>: UIVie
 
             if let newValue = secondaryTabViewController {
                 newValue.container = self
-				newValue.delegate = delegateForTabControllers
+                newValue.delegate = delegateForTabControllers
                 addChild(newValue)
                 stackView.addArrangedSubview(newValue.view)
                 newValue.didMove(toParent: self)
@@ -131,26 +131,25 @@ open class TabViewContainerViewController<TabViewType: TabViewController>: UIVie
 
         dropView.container = self
         primaryTabViewController.container = self
-		primaryTabViewController.delegate = delegateForTabControllers
+        primaryTabViewController.delegate = delegateForTabControllers
         addChild(primaryTabViewController)
     }
 
-    public required init?(coder aDecoder: NSCoder)
-	{
-		self.state = .single
-		self.theme = TabViewThemeLight()
-		self.primaryTabViewController = TabViewType.init(theme: theme)
-		self.secondaryTabViewController = nil
-		self.stackView = UIStackView()
-		self.backgroundView = UIView()
+    public required init?(coder aDecoder: NSCoder) {
+        self.state = .single
+        self.theme = TabViewThemeLight()
+        self.primaryTabViewController = TabViewType.init(theme: theme)
+        self.secondaryTabViewController = nil
+        self.stackView = UIStackView()
+        self.backgroundView = UIView()
 
-		super.init(coder: aDecoder)
+        super.init(coder: aDecoder)
 
-		dropView.container = self
-		primaryTabViewController.container = self
-		primaryTabViewController.delegate = delegateForTabControllers
-		addChild(primaryTabViewController)
-	}
+        dropView.container = self
+        primaryTabViewController.container = self
+        primaryTabViewController.delegate = delegateForTabControllers
+        addChild(primaryTabViewController)
+    }
 
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -180,7 +179,7 @@ open class TabViewContainerViewController<TabViewType: TabViewController>: UIVie
 
         applyTheme(theme)
 
-		prepareTabViewForDisplay(primaryViewController)
+        prepareTabViewForDisplay(primaryViewController)
     }
 
     private func applyTheme(_ theme: TabViewTheme) {
@@ -197,11 +196,10 @@ open class TabViewContainerViewController<TabViewType: TabViewController>: UIVie
         return theme.statusBarStyle
     }
 
-	/// Allows subclasses to customize the intial settings of the tab views in a simple manner. The default
-	/// implementation does nothing.
-	open func prepareTabViewForDisplay(_ tabView: TabViewController)
-	{
-	}
+    /// Allows subclasses to customize the intial settings of the tab views in a simple manner. The default
+    /// implementation does nothing.
+    open func prepareTabViewForDisplay(_ tabView: TabViewController) {
+    }
 }
 
 /// This transparent view is displayed on the trailing side of the container, only when a drag and drop session is active.

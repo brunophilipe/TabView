@@ -23,8 +23,8 @@ open class TabViewController: UIViewController {
         set { super.title = newValue }
     }
 
-	/// Use delegate calls to customize tab lifecycle.
-	public weak var delegate: TabViewControllerDelegate? = nil
+    /// Use delegate calls to customize tab lifecycle.
+    public weak var delegate: TabViewControllerDelegate? = nil
 
     /// The current tab shown in the tab view controller's content view
     public var visibleViewController: UIViewController? {
@@ -93,12 +93,11 @@ open class TabViewController: UIViewController {
 
     /// Tab bar shown above the content view
     private let tabViewBar: TabViewBar
-	
-	/// A public accessor to the tabViewBar, to allow for targeted drop events from other apps.
-	public var titleBarView: UIView
-	{
-		return tabViewBar
-	}
+
+    /// A public accessor to the tabViewBar, to allow for targeted drop events from other apps.
+    public var titleBarView: UIView {
+        return tabViewBar
+    }
 
     /// View containing the current tab's view
     private let contentView: UIView
@@ -110,14 +109,14 @@ open class TabViewController: UIViewController {
         didSet { container?.dragStateChanged(in: self, to: dragInProgress) }
     }
 
-	var allowsDraggingLastTab: Bool {
-		if let container = self.container {
-			// We don't want the last tab of the primary tab view controller to be dragged away
-			return !(container.primaryViewController === self)
-		} else {
-			return true
-		}
-	}
+    var allowsDraggingLastTab: Bool {
+        if let container = self.container {
+            // We don't want the last tab of the primary tab view controller to be dragged away
+            return !(container.primaryViewController === self)
+        } else {
+            return true
+        }
+    }
 
     /// Create a new tab view controller, with a theme.
     public required init(theme: TabViewTheme) {
@@ -161,7 +160,7 @@ open class TabViewController: UIViewController {
         super.viewDidLayoutSubviews()
 
         updateVisibleViewControllerInsets()
-		tabViewBar.refresh()
+        tabViewBar.refresh()
     }
 
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -182,31 +181,31 @@ open class TabViewController: UIViewController {
             tabViewBar.layoutIfNeeded()
             _viewControllers.append(tab)
             tabViewBar.addTab(atIndex: _viewControllers.count - 1)
-			delegate?.tabViewController(self, didInstallTab: tab)
+            delegate?.tabViewController(self, didInstallTab: tab)
         }
         visibleViewController = tab
-		delegate?.tabViewController(self, didActivateTab: tab)
+        delegate?.tabViewController(self, didActivateTab: tab)
     }
 
     /// Closes the provided tab and selects another tab to be active.
     ///
     /// - Parameter tab: the tab to close
     open func closeTab(_ tab: UIViewController) {
-		if delegate?.tabViewController(self, shouldCloseTab: tab) == false {
-			// The delegate asked for the child controller not to be closed, so we stop here.
-			return
-		}
+        if delegate?.tabViewController(self, shouldCloseTab: tab) == false {
+            // The delegate asked for the child controller not to be closed, so we stop here.
+            return
+        }
 
-		detachTab(tab)
+        detachTab(tab)
 
-		// If the child controller is interested in being informed it was closed, we do so.
-		delegate?.tabViewController(self, didCloseTab: tab)
-	}
+        // If the child controller is interested in being informed it was closed, we do so.
+        delegate?.tabViewController(self, didCloseTab: tab)
+    }
 
-	/// Removes the tab from this tab view controller but doesn't inform the tab it is being closed. This is an
-	/// internal method used for more than simply closing tabs, like also to move controllers between different
-	/// tab view controllers.
-	func detachTab(_ tab: UIViewController) {
+    /// Removes the tab from this tab view controller but doesn't inform the tab it is being closed. This is an
+    /// internal method used for more than simply closing tabs, like also to move controllers between different
+    /// tab view controllers.
+    func detachTab(_ tab: UIViewController) {
         if let index = _viewControllers.firstIndex(of: tab) {
             tabViewBar.layoutIfNeeded()
             _viewControllers.remove(at: index)
@@ -236,25 +235,23 @@ open class TabViewController: UIViewController {
         tabViewBar.addTab(atIndex: index)
     }
 
-	/// Requests the controller to reload the titles and other properties (like whether the close button is desired)
-	/// of each tab cell.
-	func refreshTabCells() {
-		tabViewBar.refresh()
-	}
+    /// Requests the controller to reload the titles and other properties (like whether the close button is desired)
+    /// of each tab cell.
+    func refreshTabCells() {
+        tabViewBar.refresh()
+    }
 
     open override var preferredStatusBarStyle: UIStatusBarStyle {
         return theme.statusBarStyle
     }
 
-	public func setToolbarItemSpacing(_ spacing: CGFloat)
-	{
-		tabViewBar.setItemStackSpacing(spacing)
-	}
+    public func setToolbarItemSpacing(_ spacing: CGFloat) {
+        tabViewBar.setItemStackSpacing(spacing)
+    }
 
-	public func setToolbarItemMinimumWidth(_ width: CGFloat)
-	{
-		tabViewBar.setItemStackMinimumWidth(width)
-	}
+    public func setToolbarItemMinimumWidth(_ width: CGFloat) {
+        tabViewBar.setItemStackMinimumWidth(width)
+    }
 
     /// Apply the current theme to the view controller and its views.
     private func applyTheme(_ theme: TabViewTheme) {
@@ -294,37 +291,37 @@ open class TabViewController: UIViewController {
 
 public protocol TabViewControllerDelegate: class {
 
-	/// Asks the delegate if the tab is ready to be closed. Return false to prevent this tab from being closed.
-	/// This is useful, for example, to prevent the tab closing when the document it is displaying has unsaved changes.
-	func tabViewController(_ tabViewController: TabViewController, shouldCloseTab tab: UIViewController) -> Bool
+    /// Asks the delegate if the tab is ready to be closed. Return false to prevent this tab from being closed.
+    /// This is useful, for example, to prevent the tab closing when the document it is displaying has unsaved changes.
+    func tabViewController(_ tabViewController: TabViewController, shouldCloseTab tab: UIViewController) -> Bool
 
-	/// Asks the delegate if the tab should display a close button.
-	func tabViewController(_ tabViewController: TabViewController, showCloseButtonForTab tab: UIViewController) -> Bool
+    /// Asks the delegate if the tab should display a close button.
+    func tabViewController(_ tabViewController: TabViewController, showCloseButtonForTab tab: UIViewController) -> Bool
 
-	/// Informs the delegate that the view controller was added to its array of controllers.
-	func tabViewController(_ tabViewController: TabViewController, didInstallTab tab: UIViewController)
+    /// Informs the delegate that the view controller was added to its array of controllers.
+    func tabViewController(_ tabViewController: TabViewController, didInstallTab tab: UIViewController)
 
-	/// Informs the delegate that the view controller was activated.
-	func tabViewController(_ tabViewController: TabViewController, didActivateTab tab: UIViewController)
+    /// Informs the delegate that the view controller was activated.
+    func tabViewController(_ tabViewController: TabViewController, didActivateTab tab: UIViewController)
 
-	/// Informs the delegate that the view controller was successfully removed from the tab view controller, and that
-	/// it will be released as soon as this method returns.
-	func tabViewController(_ tabViewController: TabViewController, didCloseTab tab: UIViewController)
+    /// Informs the delegate that the view controller was successfully removed from the tab view controller, and that
+    /// it will be released as soon as this method returns.
+    func tabViewController(_ tabViewController: TabViewController, didCloseTab tab: UIViewController)
 
-	/// Informs the delegate that the user has tapped the "new tab" button in the specified tab view controller.
-	func tabViewControllerWantsNewTab(_ tabViewController: TabViewController)
+    /// Informs the delegate that the user has tapped the "new tab" button in the specified tab view controller.
+    func tabViewControllerWantsNewTab(_ tabViewController: TabViewController)
 }
 
 // Define these conformances, to make sure we expose the proper methods to the tab view bar.
 extension TabViewController: TabViewBarDataSource, TabViewBarDelegate {
 
-	func wantsCloseButton(for tab: UIViewController) -> Bool {
-		return delegate?.tabViewController(self, showCloseButtonForTab: tab) ?? true
-	}
+    func wantsCloseButton(for tab: UIViewController) -> Bool {
+        return delegate?.tabViewController(self, showCloseButtonForTab: tab) ?? true
+    }
 
-	func newTab() {
-		delegate?.tabViewControllerWantsNewTab(self)
-	}
+    func newTab() {
+        delegate?.tabViewControllerWantsNewTab(self)
+    }
 }
 
 public extension UIViewController {

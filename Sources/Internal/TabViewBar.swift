@@ -20,12 +20,12 @@ protocol TabViewBarDataSource: class {
 
 protocol TabViewBarDelegate: class {
     func activateTab(_ tab: UIViewController)
-	func detachTab(_ tab: UIViewController)
+    func detachTab(_ tab: UIViewController)
     func closeTab(_ tab: UIViewController)
     func insertTab(_ tab: UIViewController, atIndex index: Int)
-	func newTab()
-	func wantsCloseButton(for tab: UIViewController) -> Bool
-	var allowsDraggingLastTab: Bool { get }
+    func newTab()
+    func wantsCloseButton(for tab: UIViewController) -> Bool
+    var allowsDraggingLastTab: Bool { get }
     var dragInProgress: Bool { get set }
 }
 
@@ -42,8 +42,8 @@ class TabViewBar: UIView {
         didSet { self.applyTheme(theme) }
     }
 
-	/// The minimum width of the bar items.
-	var minimumBarItemWidth: CGFloat = 30.0
+    /// The minimum width of the bar items.
+    var minimumBarItemWidth: CGFloat = 30.0
 
     /// The bar has a visual effect view with a blur effect determined by the current theme.
     /// This tries to match UINavigationBar's blur effect as best as it can.
@@ -61,8 +61,8 @@ class TabViewBar: UIView {
     /// Collection view containing the tabs from the data source
     private let tabCollectionView: TabViewTabCollectionView
 
-	/// A button that can be used to trigger the creation of a new tab.
-	private let newTabButton: UIButton
+    /// A button that can be used to trigger the creation of a new tab.
+    private let newTabButton: UIButton
     
     /// View below the tabCollectionView that is a 1px separator
     private let separator: UIView
@@ -70,7 +70,7 @@ class TabViewBar: UIView {
     /// Constraint that places the top of the tabCollectionView.
     /// Constant is adjusted when the view should be hidden, which causes the bar to resize.
     private var tabTopConstraint: NSLayoutConstraint?
-    
+
     /// Create a new tab view bar with the given theme.
     init(theme: TabViewTheme) {
         self.theme = theme
@@ -83,7 +83,7 @@ class TabViewBar: UIView {
         self.trailingBarButtonStackView = UIStackView()
         
         self.tabCollectionView = TabViewTabCollectionView(theme: theme)
-		self.newTabButton = AddButton(type: .custom)
+        self.newTabButton = AddButton(type: .custom)
         self.separator = UIView()
         
         super.init(frame: .zero)
@@ -117,7 +117,7 @@ class TabViewBar: UIView {
             titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingBarButtonStackView.leadingAnchor, constant: -5),
             titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             titleLabel.heightAnchor.constraint(equalToConstant: barHeight).withPriority(.defaultHigh)
-            ])
+        ])
         
         // Lay out stack views
         NSLayoutConstraint.activate([
@@ -127,7 +127,7 @@ class TabViewBar: UIView {
             trailingBarButtonStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -15),
             trailingBarButtonStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             trailingBarButtonStackView.heightAnchor.constraint(equalToConstant: barHeight).withPriority(.defaultHigh)
-            ])
+        ])
         
         // Lay out tab collection view
         tabCollectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -135,23 +135,23 @@ class TabViewBar: UIView {
         let tabTopConstraint = tabCollectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor)
         self.tabTopConstraint = tabTopConstraint
 
-		// Add new tab button
-		newTabButton.translatesAutoresizingMaskIntoConstraints = false
-		newTabButton.addTarget(self, action: #selector(TabViewBar.didTapNewTab(_:)), for: .touchUpInside)
-		addSubview(newTabButton)
+        // Add new tab button
+        newTabButton.translatesAutoresizingMaskIntoConstraints = false
+        newTabButton.addTarget(self, action: #selector(TabViewBar.didTapNewTab(_:)), for: .touchUpInside)
+        addSubview(newTabButton)
 
-		// Activate collection view and add button constraints
-		NSLayoutConstraint.activate([
-			tabCollectionView.heightAnchor.constraint(equalToConstant: tabHeight),
-			tabTopConstraint,
-			tabCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
-			tabCollectionView.trailingAnchor.constraint(equalTo: newTabButton.leadingAnchor, constant: 1),
-			newTabButton.trailingAnchor.constraint(equalTo: trailingAnchor),
-			tabCollectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
-			newTabButton.topAnchor.constraint(equalTo: tabCollectionView.topAnchor),
-			newTabButton.bottomAnchor.constraint(equalTo: tabCollectionView.bottomAnchor),
-			newTabButton.widthAnchor.constraint(equalTo: newTabButton.heightAnchor)
-			])
+        // Activate collection view and add button constraints
+        NSLayoutConstraint.activate([
+            tabCollectionView.heightAnchor.constraint(equalToConstant: tabHeight),
+            tabTopConstraint,
+            tabCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            tabCollectionView.trailingAnchor.constraint(equalTo: newTabButton.leadingAnchor, constant: 1),
+            newTabButton.trailingAnchor.constraint(equalTo: trailingAnchor),
+            tabCollectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            newTabButton.topAnchor.constraint(equalTo: tabCollectionView.topAnchor),
+            newTabButton.bottomAnchor.constraint(equalTo: tabCollectionView.bottomAnchor),
+            newTabButton.widthAnchor.constraint(equalTo: newTabButton.heightAnchor)
+        ])
         
         // Add separator below tab collection view
         separator.translatesAutoresizingMaskIntoConstraints = false
@@ -161,7 +161,7 @@ class TabViewBar: UIView {
             separator.leadingAnchor.constraint(equalTo: leadingAnchor),
             separator.trailingAnchor.constraint(equalTo: trailingAnchor),
             separator.bottomAnchor.constraint(equalTo: bottomAnchor)
-            ])
+        ])
         
         applyTheme(theme)
     }
@@ -174,13 +174,13 @@ class TabViewBar: UIView {
         titleLabel.textColor = theme.barTitleColor
         separator.backgroundColor = theme.separatorColor
         tabCollectionView.theme = theme
-		newTabButton.tintColor = theme.barTitleColor
-		newTabButton.backgroundColor = theme.tabBackgroundDeselectedColor
+        newTabButton.tintColor = theme.barTitleColor
+        newTabButton.backgroundColor = theme.tabBackgroundDeselectedColor
     }
     
     /// Reset the leading items.
     func setLeadingBarButtonItems(_ barButtonItems: [UIBarButtonItem]) {
-		let minimumWidth = minimumBarItemWidth
+        let minimumWidth = minimumBarItemWidth
         let views = barButtonItems.map { $0.toView(minimumWidth) }
 
         for view in leadingBarButtonStackView.arrangedSubviews {
@@ -193,7 +193,7 @@ class TabViewBar: UIView {
     
     /// Reset the trailing items.
     func setTrailingBarButtonItems(_ barButtonItems: [UIBarButtonItem]) {
-		let minimumWidth = minimumBarItemWidth
+        let minimumWidth = minimumBarItemWidth
         let views = barButtonItems.map { $0.toView(minimumWidth) }
 
         for view in trailingBarButtonStackView.arrangedSubviews {
@@ -204,15 +204,13 @@ class TabViewBar: UIView {
         }
     }
 
-	func setItemStackSpacing(_ spacing: CGFloat)
-	{
-		[leadingBarButtonStackView, trailingBarButtonStackView].forEach({ $0.spacing = spacing })
-	}
+    func setItemStackSpacing(_ spacing: CGFloat) {
+        [leadingBarButtonStackView, trailingBarButtonStackView].forEach({ $0.spacing = spacing })
+    }
 
-	func setItemStackMinimumWidth(_ width: CGFloat)
-	{
-		minimumBarItemWidth = width
-	}
+    func setItemStackMinimumWidth(_ width: CGFloat) {
+        minimumBarItemWidth = width
+    }
     
     /// Add a new tab at the given index. Animates.
     func addTab(atIndex index: Int) {
@@ -249,11 +247,11 @@ class TabViewBar: UIView {
         if shouldHide && !tabCollectionView.isHidden {
             tabCollectionView.isHidden = true
             tabTopConstraint?.constant = -tabHeight
-			newTabButton.isHidden = true
+            newTabButton.isHidden = true
         } else if !shouldHide && tabCollectionView.isHidden {
             tabCollectionView.isHidden = false
             tabTopConstraint?.constant = 0
-			newTabButton.isHidden = false
+            newTabButton.isHidden = false
         }
     }
     
@@ -274,33 +272,28 @@ class TabViewBar: UIView {
         }
     }
 
-	@objc private func didTapNewTab(_ sender: Any?)
-	{
-		barDelegate?.newTab()
-	}
+    @objc private func didTapNewTab(_ sender: Any?) {
+        barDelegate?.newTab()
+    }
 }
 
-private class AddButton: UIButton
-{
-	override func draw(_ rect: CGRect)
-	{
-		var armLength = floor(min(frame.width, frame.height) / 2)
+private class AddButton: UIButton {
+    override func draw(_ rect: CGRect) {
+        var armLength = floor(min(frame.width, frame.height) / 2)
 
-		if Int(armLength) % 2 == 0
-		{
-			// Make sure legth is odd so that we can centralize the icon
-			armLength -= 1.0
-		}
+        if Int(armLength) % 2 == 0 {
+            // Make sure legth is odd so that we can centralize the icon
+            armLength -= 1.0
+        }
 
-		guard armLength > 0 else
-		{
-			return
-		}
+        guard armLength > 0 else {
+            return
+        }
 
-		let center = CGPoint(x: frame.width / 2, y: frame.height / 2)
+        let center = CGPoint(x: frame.width / 2, y: frame.height / 2)
 
-		tintColor.setFill()
-		UIRectFill(CGRect(x: center.x - armLength / 2, y: floor(center.y), width: armLength, height: 1))
-		UIRectFill(CGRect(x: floor(center.x), y: center.y - armLength / 2, width: 1, height: armLength))
-	}
+        tintColor.setFill()
+        UIRectFill(CGRect(x: center.x - armLength / 2, y: floor(center.y), width: armLength, height: 1))
+        UIRectFill(CGRect(x: floor(center.x), y: center.y - armLength / 2, width: 1, height: armLength))
+    }
 }
