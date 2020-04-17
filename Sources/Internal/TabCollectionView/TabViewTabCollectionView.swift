@@ -8,10 +8,10 @@
 
 import UIKit
 
-private let closeButtonSize: CGFloat = 28
-private let closeButtonImageSize: CGFloat = 15
+private let closeButtonSize: CGFloat = variant(iOS13: 25, other: 28)
+private let closeButtonImageSize: CGFloat = variant(iOS13: 13, other: 15)
 private let closeButtonImagePadding: CGFloat = 4
-private let closeButtonImageThickness: CGFloat = 1
+private let closeButtonImageThickness: CGFloat = variant(iOS13: 1.25, other: 1)
 private let titleLabelPadding: CGFloat = 12
 
 /// Collection view to display a horizontal list of tabs.
@@ -218,8 +218,12 @@ private class TabViewTab: UICollectionViewCell {
         let buttonInsets = UIEdgeInsets(top: buttonSizeDiff.height / 2, left: buttonSizeDiff.width / 2, bottom: buttonSizeDiff.height / 2, right: buttonSizeDiff.width / 2)
 
         closeButton.setImage(TabViewTab.closeImage, for: .normal)
-        closeButton.imageView?.layer.cornerRadius = buttonImageSize.width / 2
+        closeButton.imageView?.layer.cornerRadius = variant(iOS13: 2, other: buttonImageSize.width / 2)
         closeButton.imageEdgeInsets = buttonInsets
+
+        if #available(iOS 13.0, *) {
+            closeButton.imageView?.layer.cornerCurve = .continuous
+        }
 
         closeButton.addTarget(self, action: #selector(TabViewTab.closeButtonTapped), for: .touchUpInside)
 
@@ -338,4 +342,12 @@ private class TabViewTab: UICollectionViewCell {
             context.cgContext.addPath(upwards.cgPath)
         }).withRenderingMode(.alwaysTemplate)
     }()
+}
+
+func variant<V>(iOS13: V, other: V) -> V {
+    if #available(iOS 13, *) {
+        return iOS13
+    } else {
+        return other
+    }
 }

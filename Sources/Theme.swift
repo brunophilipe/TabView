@@ -59,14 +59,14 @@ open class TabViewThemeLight: NSObject, TabViewTheme {
     public var barBlurStyle: UIBlurEffect.Style = .light
     public var separatorColor: UIColor = .init(white: 0.7, alpha: 1)
     public var tabCloseButtonColor: UIColor = .white
-    public var tabCloseButtonBackgroundColor: UIColor = .init(white: 175/255, alpha: 1)
+    public var tabCloseButtonBackgroundColor: UIColor = variant(iOS13: .gray, other: UIColor(white: 175/255, alpha: 1))
     public var tabBackgroundDeselectedColor: UIColor = .init(white: 0.6, alpha: 0.3)
     public var tabTextColor: UIColor = .init(white: 0.1, alpha: 1)
     public var tabSelectedTextColor: UIColor = .black
     public var statusBarStyle: UIStatusBarStyle = defaultStatusBarStyle()
 
     private static func defaultStatusBarStyle() -> UIStatusBarStyle {
-        if #available(iOSApplicationExtension 13.0, *) {
+        if #available(iOS 13.0, *) {
             return .darkContent
         } else {
             return .default
