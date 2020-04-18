@@ -191,6 +191,10 @@ open class TabViewController: UIViewController {
     ///
     /// - Parameter tab: the tab to close
     open func closeTab(_ tab: UIViewController) {
+        if visibleViewController != tab {
+            activateTab(tab)
+        }
+
         if delegate?.tabViewController(self, shouldCloseTab: tab) == false {
             // The delegate asked for the child controller not to be closed, so we stop here.
             return
