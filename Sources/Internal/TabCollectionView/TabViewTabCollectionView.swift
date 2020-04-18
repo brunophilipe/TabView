@@ -196,6 +196,8 @@ private class TabViewTab: UICollectionViewCell {
     private weak var tabContentViewController: UIViewController?
     weak var collectionView: TabViewTabCollectionView?
 
+    fileprivate var hideButtonTimer: Timer? = nil
+
     override var isSelected: Bool {
         didSet { update() }
     }
@@ -220,6 +222,11 @@ private class TabViewTab: UICollectionViewCell {
         closeButton.setImage(TabViewTab.closeImage, for: .normal)
         closeButton.imageView?.layer.cornerRadius = variant(iOS13: 2, other: buttonImageSize.width / 2)
         closeButton.imageEdgeInsets = buttonInsets
+
+        if #available(iOS 13.4, *) {
+            addInteraction(UIPointerInteraction(delegate: self))
+            closeButton.addInteraction(UIPointerInteraction(delegate: self))
+        }
 
         if #available(iOS 13.0, *) {
             closeButton.imageView?.layer.cornerCurve = .continuous
@@ -344,6 +351,70 @@ private class TabViewTab: UICollectionViewCell {
             context.cgContext.addPath(upwards.cgPath)
         }).withRenderingMode(.alwaysTemplate)
     }()
+}
+
+@available(iOS 13.4, *)
+extension TabViewTab: UIPointerInteractionDelegate {
+
+    func pointerInteraction(_ interaction: UIPointerInteraction, styleFor region: UIPointerRegion) -> UIPointerStyle? {
+        if interaction.view === closeButton {
+            let parameters = UIPreviewParameters()
+            parameters.visiblePath = .init(roundedRect: closeButton.bounds.insetBy(dx: 4, dy: 4), cornerRadius: 4)
+            return UIPointerStyle(effect: .highlight(UITargetedPreview(view: closeButton, parameters: parameters)))
+        }
+
+        return nil
+    }
+
+    func pointerInteraction(_ interaction: UIPointerInteraction,
+                            willEnter region: UIPointerRegion,
+                            animator: UIPointerInteractionAnimating) {
+
+        guard isSelected == false, showsCloseButton else {
+            return
+        }
+
+        // This means we're still inside the area of the tab view, and so we don't wanna hide the close button
+        hideButtonTimer?.invalidate()
+        hideButtonTimer = nil
+
+        if interaction.view === self {
+            showCloseButton()
+        }
+    }
+
+    func pointerInteraction(_ interaction: UIPointerInteraction,
+                            willExit region: UIPointerRegion,
+                            animator: UIPointerInteractionAnimating) {
+
+        guard isSelected == false, showsCloseButton else {
+            return
+        }
+
+        if interaction.view === self {
+            hideButtonTimer?.invalidate()
+            hideButtonTimer = .scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(hideCloseButton(_:)),
+                                              userInfo: nil, repeats: false)
+        }
+    }
+
+    private func showCloseButton() {
+        let closeButton = self.closeButton
+
+        UIView.animate(withDuration: 0.25, delay: 0.0, options: [.beginFromCurrentState], animations: {
+            closeButton.alpha = 1.0
+        })
+    }
+
+    @objc
+    private func hideCloseButton(_ timer: Timer) {
+        hideButtonTimer = nil
+        let closeButton = self.closeButton
+
+        UIView.animate(withDuration: 0.25, delay: 0.0, options: [.beginFromCurrentState], animations: {
+            closeButton.alpha = 0.0
+        })
+    }
 }
 
 func variant<V>(iOS13: V, other: V) -> V {
