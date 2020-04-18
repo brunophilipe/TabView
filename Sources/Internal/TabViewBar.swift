@@ -87,19 +87,24 @@ class TabViewBar: UIView {
         self.separator = UIView()
         
         super.init(frame: .zero)
-        
+
+        if #available(iOS 13.4, *) {
+            newTabButton.isPointerInteractionEnabled = true
+            newTabButton.pointerStyleProvider = { button, _, _ in .init(effect: .highlight(.init(view: button))) }
+        }
+
         tabCollectionView.bar = self
-        
+
         addSubview(visualEffectView)
         visualEffectView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        
+
         // Match UINavigationBar's title font
         titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         // Should shrink before bar button items, but should move on X axis (centerXAnchor is .defaultLow) before it shrinks.
         titleLabel.setContentCompressionResistancePriority(.init(500), for: .horizontal)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(titleLabel)
-        
+
         for stackView in [leadingBarButtonStackView, trailingBarButtonStackView] {
             stackView.alignment = .fill
             stackView.axis = .horizontal
@@ -110,6 +115,7 @@ class TabViewBar: UIView {
             stackView.setContentHuggingPriority(.required, for: .horizontal)
             addSubview(stackView)
         }
+
         // Lay out titleLabel
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).withPriority(.defaultLow),
@@ -118,7 +124,7 @@ class TabViewBar: UIView {
             titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             titleLabel.heightAnchor.constraint(equalToConstant: barHeight).withPriority(.defaultHigh)
         ])
-        
+
         // Lay out stack views
         NSLayoutConstraint.activate([
             leadingBarButtonStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 15),
