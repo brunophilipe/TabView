@@ -87,7 +87,7 @@ extension TabViewTabCollectionView: UICollectionViewDataSource {
         let tab = viewControllers[indexPath.row]
 
         cell.collectionView = self
-        cell.showCloseButton = barDelegate?.wantsCloseButton(for: tab) ?? true
+        cell.showsCloseButton = barDelegate?.wantsCloseButton(for: tab) ?? true
         cell.setTab(tab)
 
         return cell
@@ -193,14 +193,14 @@ private class TabViewTab: UICollectionViewCell {
     private var titleViewLeadingConstraint: NSLayoutConstraint?
     private var titleViewWidthConstraint: NSLayoutConstraint?
 
-    private weak var currentTab: UIViewController?
+    private weak var tabContentViewController: UIViewController?
     weak var collectionView: TabViewTabCollectionView?
 
     override var isSelected: Bool {
         didSet { update() }
     }
 
-    var showCloseButton: Bool = true {
+    var showsCloseButton: Bool = true {
         didSet { update() }
     }
 
@@ -266,7 +266,7 @@ private class TabViewTab: UICollectionViewCell {
     }
 
     private var isActive: Bool {
-        return collectionView?.bar?.barDataSource?.visibleViewController == currentTab
+        return collectionView?.bar?.barDataSource?.visibleViewController == tabContentViewController
     }
 
     func applyTheme(_ theme: TabViewTheme) {
@@ -284,7 +284,7 @@ private class TabViewTab: UICollectionViewCell {
     }
 
     func setTab(_ tab: UIViewController) {
-        currentTab = tab
+        tabContentViewController = tab
 
         update()
     }
@@ -300,9 +300,11 @@ private class TabViewTab: UICollectionViewCell {
             applyTheme(theme)
         }
 
-        self.closeButton.isHidden = (!self.isActive || self.bounds.size.width < closeButtonSize) || !showCloseButton
+        let hideCloseButton = (!self.isActive || self.bounds.size.width < closeButtonSize) || !showsCloseButton
 
-        titleView.text = self.currentTab?.title
+        self.closeButton.alpha = hideCloseButton ? 0.0 : 1.0
+
+        titleView.text = self.tabContentViewController?.title
         if !closeButton.isHidden && self.bounds.width - titleView.intrinsicContentSize.width - titleLabelPadding * 2 < closeButtonSize {
             self.titleViewLeadingConstraint?.constant = closeButtonSize
             self.titleViewWidthConstraint?.constant = 120 - (closeButtonSize + titleLabelPadding)
@@ -313,7 +315,7 @@ private class TabViewTab: UICollectionViewCell {
     }
 
     @objc func closeButtonTapped() {
-        if let currentTab = currentTab {
+        if let currentTab = tabContentViewController {
             collectionView?.bar?.barDelegate?.closeTab(currentTab)
         }
     }
