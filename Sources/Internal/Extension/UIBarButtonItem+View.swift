@@ -52,5 +52,8 @@ private class UIBarButtonItemView: UIButton {
         itemObservation = item.observe(\.title) { [weak self] item, _ in
             self?.setTitle(item.title, for: .normal)
         }
+        if #available(iOS 13.4, *) {
+            isPointerInteractionEnabled = true
+        }
     }
 }
