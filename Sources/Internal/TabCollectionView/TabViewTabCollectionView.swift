@@ -120,8 +120,15 @@ extension TabViewTabCollectionView: UICollectionViewDragDelegate {
             return []
         }
 
-        let dragItem = UIDragItem.init(itemProvider: NSItemProvider.init())
-        dragItem.localObject = viewControllers[indexPath.item]
+        let viewController = viewControllers[indexPath.item]
+        let provider = NSItemProvider()
+
+        if let bar = bar, let userActivity = barDataSource?.tabViewBar(bar, userActivityForDragging: viewController) {
+            provider.registerObject(userActivity, visibility: .all)
+        }
+
+        let dragItem = UIDragItem.init(itemProvider: provider)
+        dragItem.localObject = viewController
 
         // Render the cell in the given size, so even if it is shrunk (on iPad), it will be a reasonable size.
         let size = CGSize.init(width: 120, height: collectionView.bounds.height)

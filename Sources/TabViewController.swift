@@ -302,6 +302,17 @@ public protocol TabViewControllerDelegate: class {
     /// Asks the delegate if the tab should display a close button.
     func tabViewController(_ tabViewController: TabViewController, showCloseButtonForTab tab: UIViewController) -> Bool
 
+    /// Asks the delegate for a user activity that represents the dragged view controller.
+    ///
+    /// If a user activity is returned, it will be attached to the dragging session for the dragged tab, and the
+    /// dragging session will be allowed to leave the app. Otherwise the drag will only be allowed to live inside the
+    /// app.
+    ///
+    /// - Parameters:
+    ///   - tabViewController: The tab view controller that owns the tab being dragged
+    ///   - tab: The view controller attached to the tab being dragged
+    func tabViewController(_ tabViewController: TabViewController, userActivitySessionForDragging tab: UIViewController) -> NSUserActivity?
+
     /// Informs the delegate that the view controller was added to its array of controllers.
     func tabViewController(_ tabViewController: TabViewController, didInstallTab tab: UIViewController)
 
@@ -325,6 +336,15 @@ extension TabViewController: TabViewBarDataSource, TabViewBarDelegate {
 
     func newTab() {
         delegate?.tabViewControllerWantsNewTab(self)
+    }
+
+    func tabViewBar(_ tabViewBar: TabViewBar,
+                    userActivityForDragging viewController: UIViewController) -> NSUserActivity? {
+        if self.tabViewBar === tabViewBar {
+            return delegate?.tabViewController(self, userActivitySessionForDragging: viewController)
+        }
+
+        return nil
     }
 }
 

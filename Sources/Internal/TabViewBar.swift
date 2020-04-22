@@ -16,6 +16,7 @@ protocol TabViewBarDataSource: class {
     var viewControllers: [UIViewController] { get }
     var visibleViewController: UIViewController? { get }
     var hidesSingleTab: Bool { get }
+    func tabViewBar(_ tabViewBar: TabViewBar, userActivityForDragging viewController: UIViewController) -> NSUserActivity?
 }
 
 protocol TabViewBarDelegate: class {
