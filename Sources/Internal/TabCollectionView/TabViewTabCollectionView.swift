@@ -125,9 +125,11 @@ extension TabViewTabCollectionView: UICollectionViewDragDelegate {
 
         if let bar = bar, let userActivity = barDataSource?.tabViewBar(bar, userActivityForDragging: viewController) {
             provider.registerObject(userActivity, visibility: .all)
+        } else {
+            session.localContext = "DragRestrictedToApp"
         }
 
-        let dragItem = UIDragItem.init(itemProvider: provider)
+        let dragItem = UIDragItem(itemProvider: provider)
         dragItem.localObject = viewController
 
         // Render the cell in the given size, so even if it is shrunk (on iPad), it will be a reasonable size.
@@ -162,8 +164,7 @@ extension TabViewTabCollectionView: UICollectionViewDragDelegate {
     }
 
     func collectionView(_ collectionView: UICollectionView, dragSessionIsRestrictedToDraggingApplication session: UIDragSession) -> Bool {
-        // Don't let tabs escape the current app.
-        return true
+        return session.localContext as? String == "DragRestrictedToApp"
     }
 }
 
