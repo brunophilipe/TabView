@@ -16,7 +16,6 @@ protocol TabViewBarDataSource: class {
     var viewControllers: [UIViewController] { get }
     var visibleViewController: UIViewController? { get }
     var hidesSingleTab: Bool { get }
-    func tabViewBar(_ tabViewBar: TabViewBar, userActivityForDragging viewController: UIViewController) -> NSUserActivity?
 }
 
 protocol TabViewBarDelegate: class {
@@ -26,6 +25,7 @@ protocol TabViewBarDelegate: class {
     func insertTab(_ tab: UIViewController, atIndex index: Int)
     func newTab()
     func wantsCloseButton(for tab: UIViewController) -> Bool
+    func tabViewBar(_ tabViewBar: TabViewBar, userActivityForDraggingTab viewController: UIViewController) -> NSUserActivity?
     var allowsDraggingLastTab: Bool { get }
     var dragInProgress: Bool { get set }
 }

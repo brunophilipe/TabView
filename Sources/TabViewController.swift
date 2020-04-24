@@ -339,7 +339,7 @@ extension TabViewController: TabViewBarDataSource, TabViewBarDelegate {
     }
 
     func tabViewBar(_ tabViewBar: TabViewBar,
-                    userActivityForDragging viewController: UIViewController) -> NSUserActivity? {
+                    userActivityForDraggingTab viewController: UIViewController) -> NSUserActivity? {
         if self.tabViewBar === tabViewBar {
             return delegate?.tabViewController(self, userActivitySessionForDragging: viewController)
         }

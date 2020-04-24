@@ -107,7 +107,6 @@ extension TabViewTabCollectionView: UICollectionViewDragDelegate {
 
     func collectionView(_ collectionView: UICollectionView, dragSessionWillBegin session: UIDragSession) {
         barDelegate?.dragInProgress = true
-        session.localContext = self.barDelegate
     }
 
     func collectionView(_ collectionView: UICollectionView, dragSessionDidEnd session: UIDragSession) {
@@ -123,10 +122,11 @@ extension TabViewTabCollectionView: UICollectionViewDragDelegate {
         let viewController = viewControllers[indexPath.item]
         let provider = NSItemProvider()
 
-        if let bar = bar, let userActivity = barDataSource?.tabViewBar(bar, userActivityForDragging: viewController) {
+        if let bar = bar, let userActivity = barDelegate?.tabViewBar(bar, userActivityForDraggingTab: viewController) {
             provider.registerObject(userActivity, visibility: .all)
+            session.localContext = barDelegate.map { TabDragContext(delegate: $0, restrictDragToApp: false) }
         } else {
-            session.localContext = "DragRestrictedToApp"
+            session.localContext = barDelegate.map { TabDragContext(delegate: $0, restrictDragToApp: true) }
         }
 
         let dragItem = UIDragItem(itemProvider: provider)
@@ -164,7 +164,17 @@ extension TabViewTabCollectionView: UICollectionViewDragDelegate {
     }
 
     func collectionView(_ collectionView: UICollectionView, dragSessionIsRestrictedToDraggingApplication session: UIDragSession) -> Bool {
-        return session.localContext as? String == "DragRestrictedToApp"
+        return (session.localContext as? TabDragContext)?.draggingRestrictedToApp ?? false
+    }
+
+    private struct TabDragContext {
+        let originalTabDelegate: TabViewBarDelegate
+        let draggingRestrictedToApp: Bool
+
+        init(delegate: TabViewBarDelegate, restrictDragToApp: Bool) {
+            self.originalTabDelegate = delegate
+            self.draggingRestrictedToApp = restrictDragToApp
+        }
     }
 }
 
@@ -185,9 +195,9 @@ extension TabViewTabCollectionView: UICollectionViewDropDelegate {
             let dragItem = coordinator.session.localDragSession?.items.first,
             let destinationIndexPath = coordinator.destinationIndexPath,
             let viewController = dragItem.localObject as? UIViewController,
-            let oldDelegate = coordinator.session.localDragSession?.localContext as? TabViewBarDelegate
+            let dragContext = coordinator.session.localDragSession?.localContext as? TabDragContext
             else { return }
-        oldDelegate.detachTab(viewController)
+        dragContext.originalTabDelegate.detachTab(viewController)
         barDelegate?.insertTab(viewController, atIndex: destinationIndexPath.item)
         self.barDelegate?.activateTab(viewController)
     }
