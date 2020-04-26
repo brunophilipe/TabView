@@ -217,6 +217,8 @@ open class TabViewController: UIViewController {
             _viewControllers.remove(at: index)
             tabViewBar.removeTab(atIndex: index)
 
+            delegate?.tabViewController(self, didDetachTab: tab)
+
             if index == 0 {
                 visibleViewController = _viewControllers.first
             } else {
@@ -234,11 +236,15 @@ open class TabViewController: UIViewController {
     }
 
     func insertTab(_ tab: UIViewController, atIndex index: Int) {
-        if let oldIndex = _viewControllers.firstIndex(of: tab) {
+        let oldIndex = _viewControllers.firstIndex(of: tab)
+        if let oldIndex = oldIndex {
             _viewControllers.remove(at: oldIndex)
         }
         _viewControllers.insert(tab, at: index)
         tabViewBar.addTab(atIndex: index)
+        if oldIndex == nil {
+            delegate?.tabViewController(self, didInstallTab: tab)
+        }
     }
 
     /// Requests the controller to reload the titles and other properties (like whether the close button is desired)
@@ -320,6 +326,10 @@ public protocol TabViewControllerDelegate: class {
 
     /// Informs the delegate that the view controller was activated.
     func tabViewController(_ tabViewController: TabViewController, didActivateTab tab: UIViewController)
+
+    /// Informs the delegate that the view controller was successfully removed from the tab view controller, with no
+    /// guarantee of what happened to it.
+    func tabViewController(_ tabViewController: TabViewController, didDetachTab tab: UIViewController)
 
     /// Informs the delegate that the view controller was successfully removed from the tab view controller, and that
     /// it will be released as soon as this method returns.
