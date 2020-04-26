@@ -296,6 +296,10 @@ extension TabViewContainerViewController: TabViewContainer {
     }
 
     private var shouldEnableDropView: Bool {
-        return self.traitCollection.horizontalSizeClass == .regular
+        if #available(iOS 13.0, *) {
+            return false
+        } else {
+            return self.traitCollection.horizontalSizeClass == .regular
+        }
     }
 }

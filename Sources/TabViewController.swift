@@ -110,7 +110,9 @@ open class TabViewController: UIViewController {
     }
 
     var allowsDraggingLastTab: Bool {
-        if let container = self.container {
+        if #available(iOS 13.0, *) {
+            return true
+        } else if let container = self.container {
             // We don't want the last tab of the primary tab view controller to be dragged away
             return !(container.primaryViewController === self)
         } else {
