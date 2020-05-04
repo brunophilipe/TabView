@@ -177,8 +177,15 @@ open class TabViewController: UIViewController {
     ///
     /// - Parameters:
     ///   - viewController: the tab to activate
-    ///   - saveState: if the new state should be saved
     open func activateTab(_ tab: UIViewController) {
+        appendTab(tab, activate: true)
+    }
+
+    /// Appends a tab to the list of tabs, and optionaly makes it visible if `activate` is set to `true`.
+    /// - Parameters:
+    ///   - tab: the tab to append
+    ///   - activate: whether the tab should be activated (made visible)
+    open func appendTab(_ tab: UIViewController, activate: Bool) {
         if !_viewControllers.contains(tab) {
             tabViewBar.layoutIfNeeded()
             _viewControllers.append(tab)
@@ -186,8 +193,10 @@ open class TabViewController: UIViewController {
             tabViewBar.addTab(atIndex: _viewControllers.count - 1)
             delegate?.tabViewController(self, didInstallTab: tab)
         }
-        visibleViewController = tab
-        delegate?.tabViewController(self, didActivateTab: tab)
+        if activate {
+            visibleViewController = tab
+            delegate?.tabViewController(self, didActivateTab: tab)
+        }
     }
 
     /// Closes the provided tab and selects another tab to be active.
