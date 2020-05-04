@@ -182,6 +182,7 @@ open class TabViewController: UIViewController {
         if !_viewControllers.contains(tab) {
             tabViewBar.layoutIfNeeded()
             _viewControllers.append(tab)
+            (tab as? TabbingViewController)?.tabViewController = self
             tabViewBar.addTab(atIndex: _viewControllers.count - 1)
             delegate?.tabViewController(self, didInstallTab: tab)
         }
@@ -215,6 +216,7 @@ open class TabViewController: UIViewController {
         if let index = _viewControllers.firstIndex(of: tab) {
             tabViewBar.layoutIfNeeded()
             _viewControllers.remove(at: index)
+            (tab as? TabbingViewController)?.tabViewController = nil
             tabViewBar.removeTab(atIndex: index)
 
             delegate?.tabViewController(self, didDetachTab: tab)
@@ -241,6 +243,7 @@ open class TabViewController: UIViewController {
             _viewControllers.remove(at: oldIndex)
         }
         _viewControllers.insert(tab, at: index)
+        (tab as? TabbingViewController)?.tabViewController = self
         tabViewBar.addTab(atIndex: index)
         if oldIndex == nil {
             delegate?.tabViewController(self, didInstallTab: tab)
@@ -301,6 +304,11 @@ open class TabViewController: UIViewController {
     }
 }
 
+public protocol TabbingViewController: UIViewController {
+
+    var tabViewController: TabViewController? { get set }
+}
+
 public protocol TabViewControllerDelegate: class {
 
     /// Asks the delegate if the tab is ready to be closed. Return false to prevent this tab from being closed.
@@ -357,18 +365,5 @@ extension TabViewController: TabViewBarDataSource, TabViewBarDelegate {
         }
 
         return nil
-    }
-}
-
-public extension UIViewController {
-
-    /// Finds and returns the closest parent view controller that is a kind of `TabViewController`, if any. Otherwise
-    /// returns `nil`.
-    var tabViewController: TabViewController? {
-        guard let tabViewController = parent as? TabViewController else {
-            return parent?.tabViewController
-        }
-
-        return tabViewController
     }
 }
