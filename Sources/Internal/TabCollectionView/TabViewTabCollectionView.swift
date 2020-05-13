@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import BPPointerTools
 
 private let closeButtonSize: CGFloat = variant(iOS13: 25, other: 28)
 private let closeButtonImageSize: CGFloat = variant(iOS13: 13, other: 15)
@@ -206,7 +207,7 @@ extension TabViewTabCollectionView: UICollectionViewDropDelegate {
 private class TabViewTab: UICollectionViewCell {
 
     private let titleView: UILabel
-    private let closeButton: UIButton
+    fileprivate let closeButton: UIButton
 
     private var titleViewLeadingConstraint: NSLayoutConstraint?
     private var titleViewWidthConstraint: NSLayoutConstraint?
@@ -214,7 +215,8 @@ private class TabViewTab: UICollectionViewCell {
     private weak var tabContentViewController: UIViewController?
     weak var collectionView: TabViewTabCollectionView?
 
-    fileprivate var hideButtonTimer: Timer? = nil
+    @available(iOS 13.4, *)
+    private lazy var tabViewTabInteractionHelper = TabViewTabInteractionHelper(tabViewTab: self)
 
     override var isSelected: Bool {
         didSet { update() }
@@ -242,8 +244,8 @@ private class TabViewTab: UICollectionViewCell {
         closeButton.imageEdgeInsets = buttonInsets
 
         if #available(iOS 13.4, *) {
-            addInteraction(UIPointerInteraction(delegate: self))
-            closeButton.addInteraction(UIPointerInteraction(delegate: self))
+            addInteraction(UIPointerInteraction(delegate: tabViewTabInteractionHelper))
+            closeButton.addInteraction(UIPointerInteraction(delegate: tabViewTabInteractionHelper))
         }
 
         if #available(iOS 13.0, *) {
@@ -372,23 +374,29 @@ private class TabViewTab: UICollectionViewCell {
 }
 
 @available(iOS 13.4, *)
-extension TabViewTab: UIPointerInteractionDelegate {
+class TabViewTabInteractionHelper: BPPointerShapeHelper {
 
-    func pointerInteraction(_ interaction: UIPointerInteraction, styleFor region: UIPointerRegion) -> UIPointerStyle? {
-        if interaction.view === closeButton {
-            let parameters = UIPreviewParameters()
-            parameters.visiblePath = .init(roundedRect: closeButton.bounds.insetBy(dx: 4, dy: 4), cornerRadius: 4)
-            return UIPointerStyle(effect: .highlight(UITargetedPreview(view: closeButton, parameters: parameters)))
-        }
+    private unowned let tabViewTab: TabViewTab
 
-        return nil
+    private var hideButtonTimer: Timer? = nil
+
+    fileprivate init(tabViewTab: TabViewTab) {
+        self.tabViewTab = tabViewTab
+        super.init()
     }
 
-    func pointerInteraction(_ interaction: UIPointerInteraction,
-                            willEnter region: UIPointerRegion,
-                            animator: UIPointerInteractionAnimating) {
+    override func highlightPointerEffectPreview(withInteractionView interactionView: UIView) -> UITargetedPreview? {
+        guard interactionView === tabViewTab.closeButton else { return nil }
+        let parameters = UIPreviewParameters()
+        parameters.visiblePath = .init(roundedRect: tabViewTab.closeButton.bounds.insetBy(dx: 4, dy: 4), cornerRadius: 4)
+        return UITargetedPreview(view: tabViewTab.closeButton, parameters: parameters)
+    }
 
-        guard isSelected == false, showsCloseButton else {
+    override func pointerInteraction(_ interaction: UIPointerInteraction,
+                                     willEnter region: UIPointerRegion,
+                                     animator: UIPointerInteractionAnimating) {
+
+        guard tabViewTab.isSelected == false, tabViewTab.showsCloseButton else {
             return
         }
 
@@ -401,11 +409,11 @@ extension TabViewTab: UIPointerInteractionDelegate {
         }
     }
 
-    func pointerInteraction(_ interaction: UIPointerInteraction,
-                            willExit region: UIPointerRegion,
-                            animator: UIPointerInteractionAnimating) {
+    override func pointerInteraction(_ interaction: UIPointerInteraction,
+                                     willExit region: UIPointerRegion,
+                                     animator: UIPointerInteractionAnimating) {
 
-        guard isSelected == false, showsCloseButton else {
+        guard tabViewTab.isSelected == false, tabViewTab.showsCloseButton else {
             return
         }
 
@@ -417,7 +425,7 @@ extension TabViewTab: UIPointerInteractionDelegate {
     }
 
     private func showCloseButton() {
-        let closeButton = self.closeButton
+        let closeButton = tabViewTab.closeButton
 
         UIView.animate(withDuration: 0.25, delay: 0.0, options: [.beginFromCurrentState], animations: {
             closeButton.alpha = 1.0
@@ -427,7 +435,7 @@ extension TabViewTab: UIPointerInteractionDelegate {
     @objc
     private func hideCloseButton(_ timer: Timer) {
         hideButtonTimer = nil
-        let closeButton = self.closeButton
+        let closeButton = tabViewTab.closeButton
 
         UIView.animate(withDuration: 0.25, delay: 0.0, options: [.beginFromCurrentState], animations: {
             closeButton.alpha = 0.0

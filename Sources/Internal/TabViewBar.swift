@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import BPPointerTools
 
 private let barHeight: CGFloat = 48
 private let tabHeight: CGFloat = 33
@@ -72,6 +73,9 @@ class TabViewBar: UIView {
     /// Constant is adjusted when the view should be hidden, which causes the bar to resize.
     private var tabTopConstraint: NSLayoutConstraint?
 
+    @available(iOS 13.4, *)
+    private lazy var addTabButtonInteractionHelper = NewTabButtonPointerHelper(button: newTabButton)
+
     /// Create a new tab view bar with the given theme.
     init(theme: TabViewTheme) {
         self.theme = theme
@@ -90,8 +94,7 @@ class TabViewBar: UIView {
         super.init(frame: .zero)
 
         if #available(iOS 13.4, *) {
-            newTabButton.isPointerInteractionEnabled = true
-            newTabButton.pointerStyleProvider = { button, _, _ in .init(effect: .highlight(.init(view: button))) }
+            newTabButton.addInteraction(UIPointerInteraction(delegate: addTabButtonInteractionHelper))
         }
 
         tabCollectionView.bar = self
@@ -302,5 +305,20 @@ private class AddButton: UIButton {
         tintColor.setFill()
         UIRectFill(CGRect(x: center.x - armLength / 2, y: floor(center.y), width: armLength, height: 1))
         UIRectFill(CGRect(x: floor(center.x), y: center.y - armLength / 2, width: 1, height: armLength))
+    }
+}
+
+@available(iOS 13.4, *)
+private class NewTabButtonPointerHelper: BPPointerShapeHelper {
+
+    unowned let button: UIButton
+
+    init(button: UIButton) {
+        self.button = button
+        super.init()
+    }
+
+    override func highlightPointerEffectPreview(withInteractionView interactionView: UIView) -> UITargetedPreview? {
+        return .init(view: button)
     }
 }

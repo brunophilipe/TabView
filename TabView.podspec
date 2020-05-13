@@ -130,6 +130,6 @@ TabView 1.0.1 - A replacement for UITabViewController, which mimics Safari tabs 
   s.swift_version = "4.0"
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  # s.dependency "JSONKit", "~> 1.4"
+  s.dependency "BPPointerTools"
 
 end
