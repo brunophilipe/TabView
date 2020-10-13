@@ -38,6 +38,7 @@ open class TabViewController: UIViewController {
                 contentView.addSubview(visibleViewController.view)
                 visibleViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
                 visibleViewController.didMove(toParent: self)
+                delegate?.tabViewController(self, didActivateTab: visibleViewController)
             }
             updateVisibleViewControllerInsets()
             
@@ -193,9 +194,8 @@ open class TabViewController: UIViewController {
             tabViewBar.addTab(atIndex: _viewControllers.count - 1)
             delegate?.tabViewController(self, didInstallTab: tab)
         }
-        if activate {
+        if activate, visibleViewController !== tab {
             visibleViewController = tab
-            delegate?.tabViewController(self, didActivateTab: tab)
         }
     }
 
