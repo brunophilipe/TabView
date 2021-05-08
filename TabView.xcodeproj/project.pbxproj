@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		152D58842646F037004E5CBC /* BPPointerTools.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 152D58832646F037004E5CBC /* BPPointerTools.framework */; };
+		152D58862646F043004E5CBC /* BPPointerTools.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 152D58852646F043004E5CBC /* BPPointerTools.framework */; };
 		3C17680E20257F630031FEA9 /* TabView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C17680C20257F630031FEA9 /* TabView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3C17681C20257F910031FEA9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C17681B20257F910031FEA9 /* AppDelegate.swift */; };
 		3C17681E20257F910031FEA9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C17681D20257F910031FEA9 /* ViewController.swift */; };
@@ -67,6 +69,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		152D58832646F037004E5CBC /* BPPointerTools.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BPPointerTools.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		152D58852646F043004E5CBC /* BPPointerTools.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BPPointerTools.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C17680920257F630031FEA9 /* TabView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TabView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C17680C20257F630031FEA9 /* TabView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabView.h; sourceTree = "<group>"; };
 		3C17680D20257F630031FEA9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -93,6 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				152D58862646F043004E5CBC /* BPPointerTools.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,12 +113,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				152D58842646F037004E5CBC /* BPPointerTools.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		152D58822646F037004E5CBC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				152D58852646F043004E5CBC /* BPPointerTools.framework */,
+				152D58832646F037004E5CBC /* BPPointerTools.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		3C1767FF20257F630031FEA9 = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +136,7 @@
 				3C17680B20257F630031FEA9 /* Framework */,
 				3C17681A20257F910031FEA9 /* Sample */,
 				3C17680A20257F630031FEA9 /* Products */,
+				152D58822646F037004E5CBC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 			usesTabs = 0;
