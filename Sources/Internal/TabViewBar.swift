@@ -12,14 +12,14 @@ import BPPointerTools
 private let barHeight: CGFloat = 48
 private let tabHeight: CGFloat = 33
 
-protocol TabViewBarDataSource: class {
+protocol TabViewBarDataSource: AnyObject {
     var title: String? { get }
     var viewControllers: [UIViewController] { get }
     var visibleViewController: UIViewController? { get }
     var hidesSingleTab: Bool { get }
 }
 
-protocol TabViewBarDelegate: class {
+protocol TabViewBarDelegate: AnyObject {
     func activateTab(_ tab: UIViewController)
     func detachTab(_ tab: UIViewController)
     func closeTab(_ tab: UIViewController)
