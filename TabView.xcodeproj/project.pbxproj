@@ -139,7 +139,7 @@
 				152D58822646F037004E5CBC /* Frameworks */,
 			);
 			sourceTree = "<group>";
-			usesTabs = 0;
+			usesTabs = 1;
 		};
 		3C17680A20257F630031FEA9 /* Products */ = {
 			isa = PBXGroup;
