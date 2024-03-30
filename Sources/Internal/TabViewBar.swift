@@ -32,6 +32,7 @@ protocol TabViewBarDelegate: AnyObject {
 }
 
 /// Replacement for UINavigationBar, contains a TabCollectionView at the bottom.
+@available(iOSApplicationExtension 13.4, *)
 class TabViewBar: UIView {
     
     /// Object that provides tabs & a title to the bar.
@@ -73,7 +74,6 @@ class TabViewBar: UIView {
     /// Constant is adjusted when the view should be hidden, which causes the bar to resize.
     private var tabTopConstraint: NSLayoutConstraint?
 
-    @available(iOS 13.4, *)
     private lazy var addTabButtonInteractionHelper = NewTabButtonPointerHelper(button: newTabButton)
 
     /// Create a new tab view bar with the given theme.
