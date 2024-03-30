@@ -318,7 +318,7 @@ public protocol TabbingViewController: UIViewController {
     var tabViewController: TabViewController? { get set }
 }
 
-public protocol TabViewControllerDelegate: class {
+public protocol TabViewControllerDelegate: AnyObject {
 
     /// Asks the delegate if the tab is ready to be closed. Return false to prevent this tab from being closed.
     /// This is useful, for example, to prevent the tab closing when the document it is displaying has unsaved changes.

@@ -20,7 +20,7 @@ public enum TabViewContainerState {
 
 /// Internal protocol that the TabViewContainerViewController conforms to,
 /// so other objects and reference it without knowing its generic type.
-internal protocol TabViewContainer: class {
+internal protocol TabViewContainer: AnyObject {
     /// Get the current state of the container
     var state: TabViewContainerState { get set }
 
